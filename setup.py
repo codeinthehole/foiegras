@@ -8,4 +8,5 @@ setup(name='foiegras',
       author_email="david.winterbottom@tangentlabs.co.uk",
       description="The missing CSV loading library for Postgres",
       long_description=open('README.md').read(),
-      packages=find_packages())
+      packages=find_packages(),
+      install_requires=['psycopg2>=2.4'])
