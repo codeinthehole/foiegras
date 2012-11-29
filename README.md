@@ -1,12 +1,12 @@
 
     +------------------+
-    |          __      | FOIE GRAS
-    | uh oh >(' )      | The missing CSV loading library for Postgres
-    |         )/       |
-    |        /(        |
-    |       /  `----/  |
+    |          __      | _|_|_|_|          _|                  _|_|_|                                 
+    | uh oh >(' )      | _|        _|_|          _|_|        _|        _|  _|_|    _|_|_|    _|_|_|   
+    |         )/       | _|_|_|  _|    _|  _|  _|_|_|_|      _|  _|_|  _|_|      _|    _|  _|_|       
+    |        /(        | _|      _|    _|  _|  _|            _|    _|  _|        _|    _|      _|_|   
+    |       /  `----/  | _|        _|_|    _|    _|_|_|        _|_|_|  _|          _|_|_|  _|_|_|     
     |       \  ~=- /   |
-    | ~^~^~^~^~^~^~^~^ |
+    | ~^~^~^~^~^~^~^~^ | Rapid loading of CSVs for Postgres
     +----------------- +
 
 In MySQL you can do this:
@@ -15,10 +15,10 @@ In MySQL you can do this:
         -> REPLACE INTO TABLE 'my_data'
         -> FIELDS (isbn, price, stock);
 
-to load data from a CSV file into a table, replacing rows that match on a unique constraint.  
-This is not possible in Postgres...
+to load CSV data from `/tmp/data.csv` into the `my_data` table, replacing rows that match on a unique constraint.  
+Sadly, the Postgres's `COPY` command does not support this option.
 
-...until now:
+This package provides a work-around to allow using CSVs to update tables in Postgres.
 
     $ pip install foiegras 
     $ python
@@ -56,5 +56,5 @@ Apparently not.  There are some similar CSV loading libraries for Django
   app for uploading CSV files to populate model tables.  It uses the ORM directly to save
   new instances and so does not perform well when loading larges volumes of data.
 
-* [pgloader](http://pgfoundry.org/projects/pgloader/) - This looks like it might be quite good 
+* [`pgloader`](http://pgfoundry.org/projects/pgloader/) - This looks like it might be quite good 
   but it's hard to tell as the docs are so bad.  It's also not on PyPI.
