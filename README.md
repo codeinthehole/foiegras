@@ -29,7 +29,9 @@ Postgres.
     >>> goose = foiegras.Goose(conn)
     >>> goose.load('my_data', '/tmp/data.csv', ('isbn', 'price', 'stock'))
 
-Yay!
+Yay! Don't forget to close the connection:
+
+	>>> conn.close()
 
 ## Interesting... tell me more
 
@@ -50,6 +52,17 @@ Further reading:
 * [Wiki page for COPY](http://www.postgresql.org/docs/9.2/static/sql-copy.html)
 * [Populating a database](http://www.postgresql.org/docs/8.3/static/populate.html)
 
+## Does this work with Django?
+
+Yup.
+
+```python
+	>>> from django.db import connection
+	>>> connection.enter_transaction_management()
+	>>> goose = foisgras.Goose(connection)
+	>>> goose.load(Record._meta.db_table, '/path/to/data.csv', ('isbn', 'price', 'stock'))
+```
+
 ## Surely this has been done already?
 
 Apparently not.  There are some similar CSV loading libraries for Django
@@ -66,14 +79,18 @@ Apparently not.  There are some similar CSV loading libraries for Django
 Very simple at the moment.  All you have to do is instantiate a `Goose` object passing a
 psycopg2 connection:
 
+```python
 	>>> conn = psycopg2.connect("dbname=mydb")
 	>>> goose = foiegras.Goose(conn)
+```
 
 Then the only method you need to know is `load` which has signature:
 
+```python
 	def load(self, table_name, filepath, fields, delimiter=",", 
 	         replace_duplicates=True, has_header=False):
 	    ...
+```
 
 If `replace_duplicates == False`, then rows from the CSV file that match on a
 unique constraint will be ignored.
@@ -82,10 +99,12 @@ unique constraint will be ignored.
 
 Zero to tests passing in 6 presses of `↩`:
 
-	git clone git@github.com:codeinthehole/foiegras.git
-	cd foiegras
-	mkvirtualenv foiegras
-	python setup.py develop
-	pip install -r requirements.txt
-	nosetests
+```bash
+	$ git clone git@github.com:codeinthehole/foiegras.git
+	$ cd foiegras
+	$ mkvirtualenv foiegras
+	$ python setup.py develop
+	$ pip install -r requirements.txt
+	$ nosetests
+```
 
