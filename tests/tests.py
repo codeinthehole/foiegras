@@ -109,3 +109,11 @@ class TestLoad(unittest.TestCase):
                         ('isbn', 'price', 'stock'),
                         delimiter="|")
         self.assertNumRows(16)
+
+    def test_allows_header_to_be_ignored(self):
+        self.goose.load(self.table,
+                        self.fixture_path('with_header.csv'),
+                        ('isbn', 'price', 'stock'),
+                        has_header=True)
+        self.assertNumRows(4)
+

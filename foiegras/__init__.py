@@ -5,7 +5,7 @@ LOAD_CSV = """
     COPY %(table)s %(columns)s
     FROM '%(filepath)s'
     DELIMITER AS '%(delimiter)s'
-    CSV"""
+    CSV %(options)s"""
 
 # Duplicate a table's schema to form a new table without any data.
 CREATE_TEMP_TABLE = """
@@ -60,9 +60,9 @@ class Goose(object):
         self.cursor = connection.cursor()
 
     def load(self, table, filepath, fields=None,
-             delimiter=",", replace_duplicates=True):
+             delimiter=",", replace_duplicates=True, has_header=False):
         temp_table = self._create_temp_table(table)
-        self._load(temp_table, filepath, fields, delimiter)
+        self._load(temp_table, filepath, fields, delimiter, has_header)
         self._copy(table, temp_table, fields, replace_duplicates)
         self._drop(temp_table)
         self.connection.commit()
@@ -70,7 +70,8 @@ class Goose(object):
     def _drop(self, table):
         self.cursor.execute("DROP TABLE %s" % table)
 
-    def _copy(self, table, source_table, fields, replace_duplicates):
+    def _copy(self, table, source_table, fields,
+              replace_duplicates):
         # Determine unique keys on master table.  We use these for the JOIN
         # query when copying data across.  We also add an index on these fields
         # to improve performance for the copy operation.
@@ -134,7 +135,7 @@ class Goose(object):
         self.cursor.execute(sql)
         return name
 
-    def _load(self, table, filepath, fields, delimiter):
+    def _load(self, table, filepath, fields, delimiter, has_header):
         """
         Load CSV data into a table
         """
@@ -145,6 +146,7 @@ class Goose(object):
             'table': table,
             'columns': columns,
             'delimiter': delimiter,
+            'options': 'HEADER' if has_header else '',
             'filepath': filepath}
         self.cursor.execute(sql)
 

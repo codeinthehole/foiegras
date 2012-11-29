@@ -72,7 +72,7 @@ psycopg2 connection:
 Then the only method you need to know is `load` which has signature:
 
 	def load(self, table_name, filepath, fields, delimiter=",", 
-	         replace_duplicates=True):
+	         replace_duplicates=True, has_header=False):
 	    ...
 
 If `replace_duplicates == False`, then rows from the CSV file that match on a
