@@ -1,12 +1,12 @@
 
     +------------------+
-    |          __      | _|_|_|_|          _|                  _|_|_|                                 
-    | uh oh >(' )      | _|        _|_|          _|_|        _|        _|  _|_|    _|_|_|    _|_|_|   
-    |         )/       | _|_|_|  _|    _|  _|  _|_|_|_|      _|  _|_|  _|_|      _|    _|  _|_|       
-    |        /(        | _|      _|    _|  _|  _|            _|    _|  _|        _|    _|      _|_|   
-    |       /  `----/  | _|        _|_|    _|    _|_|_|        _|_|_|  _|          _|_|_|  _|_|_|     
+    |          __      |    _|_|_|_|          _|                  _|_|_|                                 
+    | uh oh >(' )      |    _|        _|_|          _|_|        _|        _|  _|_|    _|_|_|    _|_|_|   
+    |         )/       |    _|_|_|  _|    _|  _|  _|_|_|_|      _|  _|_|  _|_|      _|    _|  _|_|       
+    |        /(        |    _|      _|    _|  _|  _|            _|    _|  _|        _|    _|      _|_|   
+    |       /  `----/  |    _|        _|_|    _|    _|_|_|        _|_|_|  _|          _|_|_|  _|_|_|     
     |       \  ~=- /   |
-    | ~^~^~^~^~^~^~^~^ | Rapid loading of CSVs for Postgres
+    | ~^~^~^~^~^~^~^~^ |    Rapid loading of CSVs for Postgres
     +----------------- +
 
 In MySQL you can do this:
@@ -15,10 +15,12 @@ In MySQL you can do this:
         -> REPLACE INTO TABLE 'my_data'
         -> FIELDS (isbn, price, stock);
 
-to load CSV data from `/tmp/data.csv` into the `my_data` table, replacing rows that match on a unique constraint.  
-Sadly, the Postgres's `COPY` command does not support this option.
+to load CSV data from `/tmp/data.csv` into the `my_data` table, replacing rows
+that match on a unique constraint.  Sadly, the Postgres's `COPY` command does
+not support this option.
 
-This package provides a work-around to allow using CSVs to update tables in Postgres.
+This package provides a work-around to allow using CSVs to update tables in
+Postgres.
 
     $ pip install foiegras 
     $ python
@@ -58,3 +60,32 @@ Apparently not.  There are some similar CSV loading libraries for Django
 
 * [`pgloader`](http://pgfoundry.org/projects/pgloader/) - This looks like it might be quite good 
   but it's hard to tell as the docs are so bad.  It's also not on PyPI.
+
+## API
+
+Very simple at the moment.  All you have to do is instantiate a `Goose` object passing a
+psycopg2 connection:
+
+	>>> conn = psycopg2.connect("dbname=mydb")
+	>>> goose = foiegras.Goose(conn)
+
+Then the only method you need to know is `load` which has signature:
+
+	def load(self, table_name, filepath, fields, delimiter=",", 
+	         replace_duplicates=True):
+	    ...
+
+If `replace_duplicates == False`, then rows from the CSV file that match on a
+unique constraint will be ignored.
+
+## Contribute
+
+Zero to tests passing in 6 presses of `↩`:
+
+	git clone git@github.com:codeinthehole/foiegras.git
+	cd foiegras
+	mkvirtualenv foiegras
+	python setup.py develop
+	pip install -r requirements.txt
+	nosetests
+
