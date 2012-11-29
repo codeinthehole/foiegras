@@ -11,9 +11,11 @@
 
 In MySQL you can do this:
 
+```mysql
     mysql> LOAD DATA INFILE '/tmp/data.csv'
         -> REPLACE INTO TABLE 'my_data'
         -> FIELDS (isbn, price, stock);
+```
 
 to load CSV data from `/tmp/data.csv` into the `my_data` table, replacing rows
 that match on a unique constraint.  Sadly, the Postgres's `COPY` command does
@@ -22,16 +24,23 @@ not support this option.
 This package provides a work-around to allow using CSVs to update tables in
 Postgres.
 
+```bash
     $ pip install foiegras 
     $ python
+```
+
+```python
     >>> import psycopg2, foiegras
     >>> conn = psycopg2.connect("dbname=mydb")
     >>> goose = foiegras.Goose(conn)
     >>> goose.load('my_data', '/tmp/data.csv', ('isbn', 'price', 'stock'))
+```
 
 Yay! Don't forget to close the connection:
 
+```python
 	>>> conn.close()
+```
 
 ## Interesting... tell me more
 
